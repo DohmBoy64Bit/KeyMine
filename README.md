@@ -4,11 +4,12 @@ A Python key generator and validator for the 8-character key format used by [Min
 
 No third-party packages required.
 
-![KeyMine desktop interface](img/preview.png)
+<p align="center">
+  <img src="img/preview.png" alt="KeyMine desktop interface">
+</p>
 
 ## Features
 
-- Compact early-2000s scene-keygen-inspired desktop interface
 - Optional command-line usage
 - Generate random valid keys
 - Create a valid key from your own 4-character prefix

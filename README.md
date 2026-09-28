@@ -1,20 +1,41 @@
-# Retro Key Generator
+# RetroMine - Key Generator for Mine-imator
 
-A small retro-inspired key generator built in Python.
+A Python key generator and validator for the 8-character key format used by [Mine-imator](https://github.com/stuffbydavid/mine-imator). Generate random keys, build a key around your own 4-character prefix, and check whether an existing key is valid — from a desktop interface or the command line.
 
-It recreates the look and feel of classic release-group keygens while providing a simple interface for generating and checking keys that match the supported validation format.
+No third-party packages required.
 
 ## Features
 
-- Retro-style desktop interface
+- Desktop interface and optional command-line usage
 - Generate random valid keys
 - Create a valid key from your own 4-character prefix
 - Live preview while entering a custom prefix
 - Validate existing keys
 - Copy generated keys to the clipboard
 - View the supported character mapping
-- Optional command-line usage
-- No third-party Python packages required
+
+## Requirements
+
+- Python 3
+- Windows, Linux, or macOS with Tkinter available
+
+Tkinter is included with most standard Python installations.
+
+## Running the App
+
+Download `keygen.py`, open a terminal in the same folder, and run:
+
+```bash
+python keygen.py
+```
+
+On Windows, you may also be able to use:
+
+```powershell
+py keygen.py
+```
+
+The graphical key generator will open automatically.
 
 ## Custom Keys
 
@@ -42,28 +63,13 @@ Custom prefixes must:
 
 Input is automatically treated as uppercase.
 
-## Requirements
+A typical custom-key workflow:
 
-- Python 3
-- Windows, Linux, or macOS with Tkinter available
-
-Tkinter is included with most standard Python installations.
-
-## Running the App
-
-Download `keygen.py`, open a terminal in the same folder, and run:
-
-```bash
-python keygen.py
-```
-
-On Windows, you may also be able to use:
-
-```powershell
-py keygen.py
-```
-
-The graphical key generator will open automatically.
+1. Launch the program.
+2. Choose the custom key option.
+3. Enter `DOHM`.
+4. The generator produces `DOHMX2V6`.
+5. Copy the finished key.
 
 ## Using the Interface
 
@@ -133,15 +139,9 @@ python keygen.py --count 10
 python keygen.py --show-mapping
 ```
 
-## Example
+## Algorithm Documentation
 
-A typical custom-key workflow looks like this:
-
-1. Launch the program.
-2. Choose the custom key option.
-3. Enter `DOHM`.
-4. The generator produces `DOHMX2V6`.
-5. Copy the finished key.
+The full explanation of the validation format — character set, mirror mapping, and worked examples — is in [docs/KEYGEN_GUIDE.md](docs/KEYGEN_GUIDE.md).
 
 ## Troubleshooting
 
@@ -198,11 +198,16 @@ DOHM
 ## Files
 
 ```text
-keygen.py
-README.md
+keygen.py               Graphical application and command-line interface
+README.md               This file
+docs/KEYGEN_GUIDE.md    Algorithm documentation
 ```
 
-`keygen.py` contains the complete graphical application and command-line interface.
+## About
+
+[Mine-imator](https://github.com/stuffbydavid/mine-imator) is a free 3D movie maker based on Minecraft. The software itself is free, and the developer accepts donations in exchange for a key — but if you'd rather not donate, a key can be generated for free on the [official website](https://www.mineimator.com).
+
+This project was meant to be a fun little thing: a small side project for seeing how the key format works, and nothing more. It isn't affiliated with Mine-imator or its developer. If you enjoy the software, please consider supporting its creator.
 
 ## Notes
 

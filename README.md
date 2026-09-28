@@ -14,8 +14,8 @@ No third-party packages required.
 - Validate existing keys
 - Copy generated keys to the clipboard
 - View the supported character mapping
-- Built-in `KEYMINE.NFO` viewer
-- Loop the included `MinefieldMelody.wav` chiptune with an on/off control
+- Built-in `KEYMINE.NFO` viewer with a hotkey to open it
+- Loop the included `MinefieldMelody.wav` chiptune, toggled with a hotkey
 - Delete Mine-imator's `Data\key.midata` from a chosen installation directory via the CLI
 
 ## Requirements
@@ -109,13 +109,20 @@ The app will tell you whether the key matches the supported format.
 
 Use the **Copy** button to place the current generated key on your clipboard.
 
+### Keyboard Shortcuts
+
+- `Ctrl+Shift+P` - Toggle the music loop on or off
+- `Ctrl+Shift+M` - Same as `Ctrl+Shift+P`, kept for muscle memory; some other apps register it as a global hotkey, which can swallow the keypress
+- `Ctrl+Shift+N` - Open the NFO viewer
+- `Ctrl+C` - Copy the current key
+
 ### NFO Viewer
 
-Use the **NFO** button to open the bundled `KEYMINE.NFO` inside the application. The viewer is read-only and uses the same compact scene-style presentation as the rest of KeyMine.
+Press `Ctrl+Shift+N` to open the bundled `KEYMINE.NFO` inside the application. The viewer is read-only and uses the same compact scene-style presentation as the rest of KeyMine.
 
 ### Music
 
-On Windows, KeyMine starts `tune/MinefieldMelody.wav` as a looping background track when the GUI opens. Use **MUSIC: ON** / **MUSIC: OFF** to stop or restart it. Closing KeyMine stops playback.
+On Windows, KeyMine starts `tune/MinefieldMelody.wav` as a looping background track when the GUI opens. Press `Ctrl+Shift+P` to stop or restart it; the status bar reports `MUSIC // ON` or `MUSIC // OFF`. Closing KeyMine stops playback.
 
 The generator and validator continue to work normally if WAV playback is unavailable.
 

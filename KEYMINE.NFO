@@ -56,11 +56,11 @@
         [x] Suffix path display (shows how the last 4 characters are derived)
         [x] Key validator with VALID / NOT VALID result
         [x] Character mapping viewer
-        [x] Built-in release NFO viewer
+        [x] Built-in release NFO viewer (Ctrl+Shift+N)
         [x] Command-line mode for scripting and batch generation
         [x] CLI key.midata deletion for a selected Mine-imator directory
         [x] Scene-style desktop interface
-        [x] Looping original chiptune: "Minefield Melody" + on/off control
+        [x] Looping original chiptune: "Minefield Melody" + Ctrl+Shift+P hotkey
         [x] No third-party packages required
 
 .-----------------------------------------------------------------------------.
@@ -108,7 +108,7 @@
 
   COPY
   ----
-  Copies the current key to the clipboard.
+  Press the COPY button or Ctrl+C to copy the current key to the clipboard.
 
   VALIDATOR
   ---------
@@ -123,12 +123,20 @@
 
   NFO
   ---
-  Opens this release NFO inside KeyMine.
+  Press Ctrl+Shift+N to open this release NFO inside KeyMine.
 
   MUSIC
   -----
-  The Windows GUI loops "Minefield Melody" at startup. MUSIC: ON / OFF toggles
-  playback. Closing KeyMine stops the track.
+  The Windows GUI loops "Minefield Melody" at startup. Press Ctrl+Shift+P to
+  toggle playback. Ctrl+Shift+M does the same, but some other apps grab that
+  combination as a global hotkey. Closing KeyMine stops the track.
+
+  KEYBOARD
+  --------
+  Ctrl+Shift+P   toggle music on/off
+  Ctrl+Shift+M   same as Ctrl+Shift+P (may be grabbed by other apps)
+  Ctrl+Shift+N   open the NFO viewer
+  Ctrl+C         copy the current key
 
 .-----------------------------------------------------------------------------.
 |                           C O M M A N D   L I N E                           |

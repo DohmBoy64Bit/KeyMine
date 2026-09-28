@@ -422,14 +422,6 @@ class KeyMineApp:
             font=("Courier New", 8, "bold"),
         ).pack(side="right", padx=(5, 0))
 
-        self.music_button = self._button(footer, "MUSIC: OFF", self.toggle_music)
-        self.music_button.config(pady=0)
-        self.music_button.pack(side="right", padx=(4, 0))
-
-        nfo_button = self._button(footer, "NFO", self.show_nfo)
-        nfo_button.config(pady=0)
-        nfo_button.pack(side="right", padx=(4, 0))
-
     def _rule(self, parent: tk.Widget) -> tk.Frame:
         return tk.Frame(parent, bg="#363636", height=2, bd=0)
 
@@ -457,6 +449,9 @@ class KeyMineApp:
         self.prefix_entry.bind("<Return>", lambda _event: self.generate_custom())
         self.validate_entry.bind("<Return>", lambda _event: self.validate_key())
         self.root.bind("<Control-c>", lambda _event: self.copy_key())
+        self.root.bind("<Control-Shift-M>", lambda _event: self.toggle_music())
+        self.root.bind("<Control-Shift-P>", lambda _event: self.toggle_music())
+        self.root.bind("<Control-Shift-N>", lambda _event: self.show_nfo())
 
     def _setup_custom_titlebar(
         self,
@@ -628,18 +623,15 @@ class KeyMineApp:
 
     def _start_music(self) -> None:
         self.music_on = audio.play_loop()
-        self.music_button.config(text="MUSIC: ON" if self.music_on else "MUSIC: OFF")
 
     def toggle_music(self) -> None:
         if self.music_on:
             audio.stop()
             self.music_on = False
-            self.music_button.config(text="MUSIC: OFF")
             self.status_var.set("MUSIC // OFF")
             return
 
         self.music_on = audio.play_loop()
-        self.music_button.config(text="MUSIC: ON" if self.music_on else "MUSIC: OFF")
         self.status_var.set("MUSIC // ON" if self.music_on else "MUSIC // UNAVAILABLE")
 
     def close(self) -> None:

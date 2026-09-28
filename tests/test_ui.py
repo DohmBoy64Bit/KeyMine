@@ -71,8 +71,6 @@ class KeyMineUiTests(unittest.TestCase):
                 "MAPPING",
                 "COPY",
                 "CHECK KEY",
-                "NFO",
-                "MUSIC: ON",
                 "X",
             },
         )
@@ -190,13 +188,45 @@ class KeyMineUiTests(unittest.TestCase):
 
     def test_music_starts_on_launch_and_toggle_stops_and_restarts_it(self) -> None:
         self.mock_play.assert_called_once()
+        self.assertTrue(self.app.music_on)
+
         self.app.toggle_music()
         self.mock_stop.assert_called_once()
-        self.assertEqual(self.app.music_button.cget("text"), "MUSIC: OFF")
+        self.assertFalse(self.app.music_on)
+        self.assertEqual(self.app.status_var.get(), "MUSIC // OFF")
 
         self.app.toggle_music()
         self.assertEqual(self.mock_play.call_count, 2)
-        self.assertEqual(self.app.music_button.cget("text"), "MUSIC: ON")
+        self.assertTrue(self.app.music_on)
+        self.assertEqual(self.app.status_var.get(), "MUSIC // ON")
+
+    def test_keyboard_shortcuts_replace_music_and_nfo_buttons(self) -> None:
+        for sequence in ("<Control-Shift-M>", "<Control-Shift-P>", "<Control-Shift-N>"):
+            self.assertTrue(
+                self.root.bind(sequence),
+                f"missing keyboard binding for {sequence}",
+            )
+
+        self.assertTrue(self.app.music_on)
+        self.app.toggle_music()
+        self.assertFalse(self.app.music_on)
+        self.assertEqual(self.app.status_var.get(), "MUSIC // OFF")
+
+        self.app.toggle_music()
+        self.assertTrue(self.app.music_on)
+        self.assertEqual(self.app.status_var.get(), "MUSIC // ON")
+
+        self.app.show_nfo()
+        self.app.show_nfo()
+        self.root.update()
+        windows = [
+            widget
+            for widget in self.root.winfo_children()
+            if isinstance(widget, tk.Toplevel)
+        ]
+        self.assertEqual(len(windows), 1)
+        for widget in windows:
+            widget.destroy()
 
     def test_nfo_viewer_displays_packaged_nfo_and_opens_only_once(self) -> None:
         existing = set(self.root.winfo_children())

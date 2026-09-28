@@ -483,13 +483,13 @@ Every pair satisfies the rule, so the key is valid.
 
 ## 9. The Python Generator
 
-The accompanying file is:
+The application entry point is `keygen.py`. The key algorithm itself lives in:
 
 ```text
-keygen.py
+keymine/core.py
 ```
 
-It contains both a generator and an independent implementation of the validator.
+That module contains both the generator and an independent implementation of the validator.
 
 The generator uses the same character set:
 
@@ -799,7 +799,16 @@ Another option is server-side activation, where a client asks a trusted server w
 
 ## 17. Python Source Structure
 
-The script is intentionally separated into small functions.
+The source is separated by responsibility:
+
+```text
+keygen.py        Application entry point
+keymine/core.py  Key generation and validation
+keymine/cli.py   Command-line handling
+keymine/ui.py    Tkinter interface
+```
+
+The core key functions are in `keymine/core.py`.
 
 ### `mirror_character(character)`
 
@@ -843,11 +852,11 @@ Checks whether a supplied key follows the same rules as the GameMaker function.
 
 ### `print_mapping()`
 
-Prints the complete character mapping for inspection.
+Lives in `keymine/cli.py` and prints the complete character mapping for inspection.
 
-### `main()`
+### `run_cli()`
 
-Handles command-line arguments and decides which operation to perform.
+Lives in `keymine/cli.py` and handles command-line arguments. `keygen.py` decides whether to run the CLI operation or launch the graphical interface.
 
 ---
 

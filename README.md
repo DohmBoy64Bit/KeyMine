@@ -23,7 +23,7 @@ Tkinter is included with most standard Python installations.
 
 ## Running the App
 
-Download `keygen.py`, open a terminal in the same folder, and run:
+Download or extract the project, open a terminal in the project folder, and run:
 
 ```bash
 python keygen.py
@@ -198,9 +198,13 @@ DOHM
 ## Files
 
 ```text
-keygen.py               Graphical application and command-line interface
+keygen.py               Application entry point
+keymine/core.py         Key generation and validation logic
+keymine/cli.py          Command-line interface
+keymine/ui.py           Tkinter desktop interface
 README.md               This file
 docs/KEYGEN_GUIDE.md    Algorithm documentation
+tests/                  Regression tests
 ```
 
 ## About

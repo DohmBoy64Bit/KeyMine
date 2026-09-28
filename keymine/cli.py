@@ -16,7 +16,7 @@ def print_mapping() -> None:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description=(
-            "Retro GUI and CLI key generator for the supplied GameMaker key algorithm. "
+            "KeyMine GUI and CLI key generator for the supplied GameMaker key algorithm. "
             "Run without arguments to open the GUI."
         )
     )

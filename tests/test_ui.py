@@ -1,17 +1,17 @@
 import tkinter as tk
 import unittest
 
-from keymine.ui import RetroKeygenApp
+from keymine.ui import KeyMineApp
 
 
-class RetroUiTests(unittest.TestCase):
+class KeyMineUiTests(unittest.TestCase):
     def setUp(self) -> None:
         try:
             self.root = tk.Tk()
         except tk.TclError as exc:
             self.skipTest(f"Tk display unavailable: {exc}")
 
-        self.app = RetroKeygenApp(self.root)
+        self.app = KeyMineApp(self.root)
         self.root.update_idletasks()
 
     def tearDown(self) -> None:
@@ -20,14 +20,14 @@ class RetroUiTests(unittest.TestCase):
             root.destroy()
 
     def test_scene_panel_palette_matches_research_direction(self) -> None:
-        self.assertEqual(RetroKeygenApp.BG, "#030303")
-        self.assertEqual(RetroKeygenApp.PANEL, "#111315")
-        self.assertEqual(RetroKeygenApp.TEXT, "#eeeeee")
-        self.assertEqual(RetroKeygenApp.MUTED, "#7f9aa8")
-        self.assertEqual(RetroKeygenApp.NEON, "#c8f3ff")
-        self.assertEqual(RetroKeygenApp.CYAN, "#9fc7db")
-        self.assertEqual(RetroKeygenApp.BORDER, "#d6d6d6")
-        self.assertEqual(RetroKeygenApp.CONTROL, "#b9b9b9")
+        self.assertEqual(KeyMineApp.BG, "#030303")
+        self.assertEqual(KeyMineApp.PANEL, "#111315")
+        self.assertEqual(KeyMineApp.TEXT, "#eeeeee")
+        self.assertEqual(KeyMineApp.MUTED, "#7f9aa8")
+        self.assertEqual(KeyMineApp.NEON, "#c8f3ff")
+        self.assertEqual(KeyMineApp.CYAN, "#9fc7db")
+        self.assertEqual(KeyMineApp.BORDER, "#d6d6d6")
+        self.assertEqual(KeyMineApp.CONTROL, "#b9b9b9")
 
     def test_main_window_is_fixed_and_compact(self) -> None:
         self.assertEqual(self.root.geometry().split("+")[0], "520x390")

@@ -15,7 +15,7 @@ from .core import (
 )
 
 
-class RetroKeygenApp:
+class KeyMineApp:
     """Compact Tkinter UI modeled after early-2000s scene utilities."""
 
     BG = "#030303"
@@ -562,6 +562,6 @@ def launch_gui() -> int:
         print(f"Unable to start the graphical interface: {exc}", file=sys.stderr)
         return 2
 
-    RetroKeygenApp(root)
+    KeyMineApp(root)
     root.mainloop()
     return 0

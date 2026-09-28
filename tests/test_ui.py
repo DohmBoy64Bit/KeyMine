@@ -145,6 +145,33 @@ class KeyMineUiTests(unittest.TestCase):
         )
         windows[0].destroy()
 
+    def test_mapping_window_opens_at_fixed_position(self) -> None:
+        self.app.show_mapping()
+        self.root.update()
+
+        windows = [
+            widget
+            for widget in self.root.winfo_children()
+            if isinstance(widget, tk.Toplevel)
+        ]
+        self.assertEqual(len(windows), 1)
+        self.assertEqual(windows[0].geometry(), "340x390+1227+315")
+        windows[0].destroy()
+
+    def test_mapping_window_opens_only_once(self) -> None:
+        self.app.show_mapping()
+        self.app.show_mapping()
+        self.app.show_mapping()
+        self.root.update()
+
+        windows = [
+            widget
+            for widget in self.root.winfo_children()
+            if isinstance(widget, tk.Toplevel)
+        ]
+        self.assertEqual(len(windows), 1)
+        windows[0].destroy()
+
     def _walk_widgets(self, parent: tk.Misc):
         for child in parent.winfo_children():
             yield child

@@ -114,6 +114,7 @@ class KeyMineApp:
         self.key_var = tk.StringVar(value=generate_key("DOHM"))
         self.validate_var = tk.StringVar(value=generate_key("DOHM"))
         self.status_var = tk.StringVar(value="READY // CUSTOM PREFIX LOADED")
+        self.mapping_window: tk.Toplevel | None = None
 
         self._build_ui()
         self._bind_events()
@@ -599,13 +600,15 @@ class KeyMineApp:
         self.status_var.set(f"COPIED TO CLIPBOARD // {key}")
 
     def show_mapping(self) -> None:
+        if self.mapping_window is not None and self.mapping_window.winfo_exists():
+            self.mapping_window.lift()
+            self.mapping_window.focus_set()
+            return
+
         window = tk.Toplevel(self.root)
+        self.mapping_window = window
         window.title("KEYMINE // MIRROR TABLE")
-        window.geometry(
-            f"340x390"
-            f"+{self.root.winfo_x() + (520 - 340) // 2}"
-            f"+{self.root.winfo_y() + (410 - 390) // 2}"
-        )
+        window.geometry("340x390+1227+315")
         window.resizable(False, False)
         window.configure(bg=self.BG)
         self._setup_custom_titlebar(window, "KEYMINE // MIRROR TABLE")

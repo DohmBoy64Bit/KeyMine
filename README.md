@@ -6,7 +6,8 @@ No third-party packages required.
 
 ## Features
 
-- Desktop interface and optional command-line usage
+- Compact early-2000s scene-keygen-inspired desktop interface
+- Optional command-line usage
 - Generate random valid keys
 - Create a valid key from your own 4-character prefix
 - Live preview while entering a custom prefix

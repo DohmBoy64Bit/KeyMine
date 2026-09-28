@@ -16,25 +16,94 @@ from .core import (
 
 
 class RetroKeygenApp:
-    """Tkinter UI inspired by classic release-group keygen aesthetics."""
+    """Compact Tkinter UI modeled after early-2000s scene utilities."""
 
-    BG = "#08090d"
-    PANEL = "#10141b"
-    PANEL_2 = "#141a22"
-    BORDER = "#2c3848"
-    TEXT = "#d8e6f3"
-    MUTED = "#7d8da3"
-    NEON = "#55ff9a"
-    CYAN = "#4bdfff"
-    MAGENTA = "#ff55d5"
+    BG = "#030303"
+    PANEL = "#111315"
+    PANEL_2 = "#090909"
+    BORDER = "#d6d6d6"
+    TEXT = "#eeeeee"
+    MUTED = "#7f9aa8"
+    NEON = "#c8f3ff"
+    CYAN = "#9fc7db"
+    MAGENTA = "#a8c5d3"
     WARNING = "#ffcc66"
     BAD = "#ff6b7a"
+    CONTROL = "#b9b9b9"
+    CONTROL_DARK = "#5e5e5e"
+
+    _LOGO_GLYPHS = {
+        "K": (
+            "10001",
+            "10010",
+            "10100",
+            "11000",
+            "10100",
+            "10010",
+            "10001",
+        ),
+        "E": (
+            "11111",
+            "10000",
+            "10000",
+            "11110",
+            "10000",
+            "10000",
+            "11111",
+        ),
+        "Y": (
+            "10001",
+            "01010",
+            "00100",
+            "00100",
+            "00100",
+            "00100",
+            "00100",
+        ),
+        "M": (
+            "10001",
+            "11011",
+            "10101",
+            "10101",
+            "10001",
+            "10001",
+            "10001",
+        ),
+        "I": (
+            "11111",
+            "00100",
+            "00100",
+            "00100",
+            "00100",
+            "00100",
+            "11111",
+        ),
+        "N": (
+            "10001",
+            "11001",
+            "11001",
+            "10101",
+            "10011",
+            "10011",
+            "10001",
+        ),
+    }
+
+    _LOGO_ROWS = (
+        "#607987",
+        "#8da8b6",
+        "#dbefff",
+        "#f6fdff",
+        "#c8f3ff",
+        "#8da8b6",
+        "#4b6471",
+    )
 
     def __init__(self, root: tk.Tk) -> None:
         self.root = root
-        self.root.title("DOHM // Retro Key Generator")
-        self.root.geometry("720x560")
-        self.root.minsize(680, 520)
+        self.root.title("KEYMINE // SERIAL UTILITY")
+        self.root.geometry("520x390")
+        self.root.resizable(False, False)
         self.root.configure(bg=self.BG)
 
         self.prefix_var = tk.StringVar(value="DOHM")
@@ -47,225 +116,272 @@ class RetroKeygenApp:
         self._refresh_custom_preview()
 
     def _build_ui(self) -> None:
-        outer = tk.Frame(self.root, bg=self.BG, padx=18, pady=16)
+        outer = tk.Frame(self.root, bg=self.BG, padx=8, pady=6)
         outer.pack(fill="both", expand=True)
 
         self._build_header(outer)
+        self._rule(outer).pack(fill="x", pady=(3, 7))
         self._build_generator_panel(outer)
+        self._rule(outer).pack(fill="x", pady=(7, 6))
         self._build_validator_panel(outer)
         self._build_footer(outer)
 
     def _build_header(self, parent: tk.Widget) -> None:
-        header = tk.Frame(
+        canvas = tk.Canvas(
             parent,
-            bg=self.PANEL,
-            highlightbackground=self.CYAN,
-            highlightthickness=1,
-            padx=16,
-            pady=12,
+            width=500,
+            height=92,
+            bg=self.BG,
+            highlightthickness=0,
+            bd=0,
         )
-        header.pack(fill="x", pady=(0, 12))
+        canvas.pack(fill="x")
 
-        tk.Label(
-            header,
-            text="D O H M   K E Y G E N",
-            bg=self.PANEL,
-            fg=self.NEON,
-            font=("Consolas", 22, "bold"),
-        ).pack(anchor="w")
+        canvas.create_text(
+            5,
+            6,
+            text="DOHM PRESENTS",
+            anchor="nw",
+            fill=self.MUTED,
+            font=("Courier New", 8, "bold"),
+        )
+        canvas.create_text(
+            495,
+            6,
+            text="KEY GENERATOR / VALIDATOR",
+            anchor="ne",
+            fill=self.MUTED,
+            font=("Courier New", 8),
+        )
 
-        tk.Label(
-            header,
-            text="[ 36-CHAR MIRROR ENGINE // 8-CHAR SERIAL FORMAT // PYTHON EDITION ]",
-            bg=self.PANEL,
-            fg=self.CYAN,
-            font=("Consolas", 9),
-        ).pack(anchor="w", pady=(3, 0))
+        self._draw_pixel_logo(canvas, "KEYMINE", center_x=250, top=24)
 
-        tk.Label(
-            header,
-            text="Classic keygen-inspired interface. No external packages required.",
-            bg=self.PANEL,
-            fg=self.MUTED,
-            font=("Consolas", 9),
-        ).pack(anchor="w", pady=(8, 0))
+        canvas.create_line(4, 82, 496, 82, fill="#363636")
+        canvas.create_line(4, 83, 496, 83, fill=self.BORDER)
+        canvas.create_line(4, 84, 496, 84, fill="#607987")
+
+    def _draw_pixel_logo(
+        self,
+        canvas: tk.Canvas,
+        text: str,
+        *,
+        center_x: int,
+        top: int,
+    ) -> None:
+        pixel = 6
+        letter_width = 5 * pixel
+        letter_gap = 7
+        width = len(text) * letter_width + (len(text) - 1) * letter_gap
+        left = center_x - width // 2
+
+        for letter_index, letter in enumerate(text):
+            glyph = self._LOGO_GLYPHS[letter]
+            letter_left = left + letter_index * (letter_width + letter_gap)
+
+            for row_index, row in enumerate(glyph):
+                fill = self._LOGO_ROWS[row_index]
+                for column_index, enabled in enumerate(row):
+                    if enabled != "1":
+                        continue
+
+                    x1 = letter_left + column_index * pixel
+                    y1 = top + row_index * pixel
+                    canvas.create_rectangle(
+                        x1 + 1,
+                        y1 + 1,
+                        x1 + pixel,
+                        y1 + pixel,
+                        fill="#25323a",
+                        outline="",
+                    )
+                    canvas.create_rectangle(
+                        x1,
+                        y1,
+                        x1 + pixel - 2,
+                        y1 + pixel - 2,
+                        fill=fill,
+                        outline="",
+                    )
 
     def _build_generator_panel(self, parent: tk.Widget) -> None:
-        panel = tk.Frame(
-            parent,
-            bg=self.PANEL,
-            highlightbackground=self.BORDER,
-            highlightthickness=1,
-            padx=16,
-            pady=14,
-        )
-        panel.pack(fill="x", pady=(0, 12))
+        panel = tk.Frame(parent, bg=self.BG)
+        panel.pack(fill="x")
 
         tk.Label(
             panel,
             text="[ GENERATOR ]",
-            bg=self.PANEL,
-            fg=self.MAGENTA,
-            font=("Consolas", 11, "bold"),
-        ).grid(row=0, column=0, columnspan=4, sticky="w", pady=(0, 10))
+            bg=self.BG,
+            fg=self.CYAN,
+            font=("Courier New", 9, "bold"),
+        ).grid(row=0, column=0, columnspan=4, sticky="w", pady=(0, 4))
 
         tk.Label(
             panel,
             text="CUSTOM PREFIX",
-            bg=self.PANEL,
+            bg=self.BG,
             fg=self.TEXT,
-            font=("Consolas", 10, "bold"),
+            font=("Tahoma", 8, "bold"),
         ).grid(row=1, column=0, sticky="w")
 
         tk.Label(
             panel,
-            text="Exactly 4 characters (A-Z / 0-9)",
-            bg=self.PANEL,
+            text="4 CHARS // A-Z 0-9",
+            bg=self.BG,
             fg=self.MUTED,
-            font=("Consolas", 8),
-        ).grid(row=2, column=0, sticky="w", pady=(2, 8))
+            font=("Courier New", 8),
+        ).grid(row=1, column=1, columnspan=3, sticky="e")
 
         self.prefix_entry = tk.Entry(
             panel,
             textvariable=self.prefix_var,
-            width=12,
+            width=9,
             justify="center",
-            bg=self.BG,
+            bg=self.PANEL_2,
             fg=self.NEON,
             insertbackground=self.NEON,
-            selectbackground=self.CYAN,
-            selectforeground=self.BG,
-            relief="flat",
-            font=("Consolas", 18, "bold"),
+            selectbackground="#607987",
+            selectforeground="#ffffff",
+            relief="sunken",
+            bd=2,
+            highlightthickness=0,
+            font=("Courier New", 11, "bold"),
         )
-        self.prefix_entry.grid(row=3, column=0, sticky="ew", padx=(0, 10))
+        self.prefix_entry.grid(row=2, column=0, sticky="ew", padx=(0, 6), pady=(2, 0))
 
-        self._button(
-            panel,
-            "GENERATE CUSTOM",
-            self.generate_custom,
-            fg=self.BG,
-            bg=self.NEON,
-        ).grid(row=3, column=1, sticky="ew", padx=(0, 8))
-
-        self._button(
-            panel,
-            "RANDOM",
-            self.generate_random,
-            fg=self.BG,
-            bg=self.CYAN,
-        ).grid(row=3, column=2, sticky="ew", padx=(0, 8))
-
-        self._button(
-            panel,
-            "MAPPING",
-            self.show_mapping,
-            fg=self.TEXT,
-            bg=self.PANEL_2,
-        ).grid(row=3, column=3, sticky="ew")
+        self._button(panel, "GENERATE CUSTOM", self.generate_custom).grid(
+            row=2,
+            column=1,
+            sticky="ew",
+            padx=(0, 5),
+            pady=(2, 0),
+        )
+        self._button(panel, "RANDOM", self.generate_random).grid(
+            row=2,
+            column=2,
+            sticky="ew",
+            padx=(0, 5),
+            pady=(2, 0),
+        )
+        self._button(panel, "MAPPING", self.show_mapping).grid(
+            row=2,
+            column=3,
+            sticky="ew",
+            pady=(2, 0),
+        )
 
         tk.Label(
             panel,
             text="GENERATED KEY",
-            bg=self.PANEL,
+            bg=self.BG,
             fg=self.TEXT,
-            font=("Consolas", 10, "bold"),
-        ).grid(row=4, column=0, columnspan=4, sticky="w", pady=(14, 5))
+            font=("Tahoma", 8, "bold"),
+        ).grid(row=3, column=0, columnspan=4, sticky="w", pady=(9, 2))
 
-        key_frame = tk.Frame(panel, bg=self.BG, padx=10, pady=9)
-        key_frame.grid(row=5, column=0, columnspan=3, sticky="ew", padx=(0, 8))
+        key_frame = tk.Frame(
+            panel,
+            bg="#050505",
+            relief="sunken",
+            bd=2,
+            padx=5,
+            pady=2,
+        )
+        key_frame.grid(row=4, column=0, columnspan=3, sticky="nsew", padx=(0, 5))
 
         self.key_label = tk.Label(
             key_frame,
             textvariable=self.key_var,
-            bg=self.BG,
+            bg="#050505",
             fg=self.NEON,
-            font=("Consolas", 24, "bold"),
+            anchor="center",
+            font=("Courier New", 16, "bold"),
         )
         self.key_label.pack(fill="x")
 
-        self._button(
-            panel,
-            "COPY",
-            self.copy_key,
-            fg=self.BG,
-            bg=self.MAGENTA,
-        ).grid(row=5, column=3, sticky="nsew")
+        self._button(panel, "COPY", self.copy_key).grid(
+            row=4,
+            column=3,
+            sticky="nsew",
+        )
 
         self.preview_label = tk.Label(
             panel,
             text="",
-            bg=self.PANEL,
+            bg=self.BG,
             fg=self.MUTED,
+            anchor="w",
             justify="left",
-            font=("Consolas", 9),
+            font=("Courier New", 8),
         )
-        self.preview_label.grid(row=6, column=0, columnspan=4, sticky="w", pady=(8, 0))
+        self.preview_label.grid(
+            row=5,
+            column=0,
+            columnspan=4,
+            sticky="ew",
+            pady=(5, 0),
+        )
 
-        panel.grid_columnconfigure(0, weight=1)
-        panel.grid_columnconfigure(1, weight=1)
-        panel.grid_columnconfigure(2, weight=1)
-        panel.grid_columnconfigure(3, weight=1)
+        panel.grid_columnconfigure(0, weight=1, minsize=100)
+        panel.grid_columnconfigure(1, weight=2, minsize=148)
+        panel.grid_columnconfigure(2, weight=1, minsize=88)
+        panel.grid_columnconfigure(3, weight=1, minsize=88)
 
     def _build_validator_panel(self, parent: tk.Widget) -> None:
-        panel = tk.Frame(
-            parent,
-            bg=self.PANEL,
-            highlightbackground=self.BORDER,
-            highlightthickness=1,
-            padx=16,
-            pady=14,
-        )
-        panel.pack(fill="x", pady=(0, 12))
+        panel = tk.Frame(parent, bg=self.BG)
+        panel.pack(fill="x")
 
         tk.Label(
             panel,
             text="[ VALIDATOR ]",
-            bg=self.PANEL,
-            fg=self.MAGENTA,
-            font=("Consolas", 11, "bold"),
-        ).grid(row=0, column=0, columnspan=3, sticky="w", pady=(0, 10))
+            bg=self.BG,
+            fg=self.CYAN,
+            font=("Courier New", 9, "bold"),
+        ).grid(row=0, column=0, columnspan=3, sticky="w", pady=(0, 4))
 
         self.validate_entry = tk.Entry(
             panel,
             textvariable=self.validate_var,
-            bg=self.BG,
+            bg=self.PANEL_2,
             fg=self.TEXT,
             insertbackground=self.NEON,
-            selectbackground=self.CYAN,
-            selectforeground=self.BG,
-            relief="flat",
+            selectbackground="#607987",
+            selectforeground="#ffffff",
+            relief="sunken",
+            bd=2,
+            highlightthickness=0,
             justify="center",
-            font=("Consolas", 15, "bold"),
+            font=("Courier New", 10, "bold"),
         )
-        self.validate_entry.grid(row=1, column=0, sticky="ew", padx=(0, 8))
+        self.validate_entry.grid(row=1, column=0, sticky="ew", padx=(0, 5))
 
-        self._button(
-            panel,
-            "CHECK KEY",
-            self.validate_key,
-            fg=self.BG,
-            bg=self.CYAN,
-        ).grid(row=1, column=1, sticky="ew", padx=(0, 8))
+        self._button(panel, "CHECK KEY", self.validate_key).grid(
+            row=1,
+            column=1,
+            sticky="ew",
+            padx=(0, 5),
+        )
 
         self.validation_result = tk.Label(
             panel,
             text="VALID",
             bg=self.PANEL_2,
             fg=self.NEON,
-            padx=14,
-            pady=8,
-            font=("Consolas", 11, "bold"),
+            relief="sunken",
+            bd=2,
+            padx=8,
+            pady=3,
+            font=("Courier New", 9, "bold"),
         )
-        self.validation_result.grid(row=1, column=2, sticky="ew")
+        self.validation_result.grid(row=1, column=2, sticky="nsew")
 
-        panel.grid_columnconfigure(0, weight=2)
-        panel.grid_columnconfigure(1, weight=1)
-        panel.grid_columnconfigure(2, weight=1)
+        panel.grid_columnconfigure(0, weight=3)
+        panel.grid_columnconfigure(1, weight=1, minsize=100)
+        panel.grid_columnconfigure(2, weight=1, minsize=84)
 
     def _build_footer(self, parent: tk.Widget) -> None:
         footer = tk.Frame(parent, bg=self.BG)
-        footer.pack(fill="x", side="bottom")
+        footer.pack(fill="x", side="bottom", pady=(7, 0))
+
+        self._rule(footer).pack(fill="x", pady=(0, 4))
 
         tk.Label(
             footer,
@@ -273,40 +389,37 @@ class RetroKeygenApp:
             bg=self.BG,
             fg=self.MUTED,
             anchor="w",
-            font=("Consolas", 9),
+            font=("Courier New", 8),
         ).pack(side="left", fill="x", expand=True)
 
         tk.Label(
             footer,
-            text="PREFIX + MIRRORED(REVERSED PREFIX)",
+            text="MIRROR-36",
             bg=self.BG,
-            fg=self.MUTED,
-            font=("Consolas", 8),
+            fg=self.CYAN,
+            font=("Courier New", 8, "bold"),
         ).pack(side="right")
 
-    def _button(
-        self,
-        parent: tk.Widget,
-        text: str,
-        command,
-        *,
-        fg: str,
-        bg: str,
-    ) -> tk.Button:
+    def _rule(self, parent: tk.Widget) -> tk.Frame:
+        return tk.Frame(parent, bg="#363636", height=2, bd=0)
+
+    def _button(self, parent: tk.Widget, text: str, command) -> tk.Button:
         return tk.Button(
             parent,
             text=text,
             command=command,
-            bg=bg,
-            fg=fg,
-            activebackground=self.TEXT,
-            activeforeground=self.BG,
-            relief="flat",
-            bd=0,
-            padx=10,
-            pady=8,
-            cursor="hand2",
-            font=("Consolas", 9, "bold"),
+            bg=self.CONTROL,
+            fg="#101010",
+            activebackground="#e2e2e2",
+            activeforeground="#000000",
+            disabledforeground=self.CONTROL_DARK,
+            relief="raised",
+            bd=2,
+            highlightthickness=0,
+            padx=5,
+            pady=2,
+            takefocus=True,
+            font=("Tahoma", 8, "bold"),
         )
 
     def _bind_events(self) -> None:
@@ -333,7 +446,10 @@ class RetroKeygenApp:
 
         if len(prefix) != PREFIX_LENGTH:
             self.preview_label.config(
-                text=f"ENTER {PREFIX_LENGTH} CHARACTERS // {PREFIX_LENGTH - len(prefix)} REMAINING"
+                text=(
+                    f"SUFFIX PATH: WAITING // {PREFIX_LENGTH - len(prefix)} "
+                    "CHAR(S) REMAINING"
+                )
             )
             return
 
@@ -356,7 +472,9 @@ class RetroKeygenApp:
         self.key_var.set(key)
         self.validate_var.set(key)
         self.validation_result.config(text="VALID", fg=self.NEON)
-        self.status_var.set(f"CUSTOM KEY GENERATED // {self.prefix_var.get().upper()} -> {key}")
+        self.status_var.set(
+            f"CUSTOM KEY GENERATED // {self.prefix_var.get().upper()} -> {key}"
+        )
 
     def generate_random(self) -> None:
         key = generate_random_key()
@@ -374,9 +492,10 @@ class RetroKeygenApp:
         if valid:
             self.validation_result.config(text="VALID", fg=self.NEON)
             self.status_var.set(f"VALIDATOR // {key} PASSED")
-        else:
-            self.validation_result.config(text="INVALID", fg=self.BAD)
-            self.status_var.set(f"VALIDATOR // {key or '<EMPTY>'} FAILED")
+            return
+
+        self.validation_result.config(text="NOT VALID", fg=self.BAD)
+        self.status_var.set(f"VALIDATOR // {key or '<EMPTY>'} FAILED")
 
     def copy_key(self) -> None:
         key = self.key_var.get().strip()
@@ -390,40 +509,48 @@ class RetroKeygenApp:
 
     def show_mapping(self) -> None:
         window = tk.Toplevel(self.root)
-        window.title("Character Mapping")
-        window.geometry("360x520")
+        window.title("KEYMINE // MIRROR TABLE")
+        window.geometry("340x390")
+        window.resizable(False, False)
         window.configure(bg=self.BG)
         window.transient(self.root)
 
-        tk.Label(
-            window,
-            text="[ MIRROR TABLE ]",
-            bg=self.BG,
-            fg=self.MAGENTA,
-            font=("Consolas", 14, "bold"),
-        ).pack(anchor="w", padx=14, pady=(14, 8))
+        outer = tk.Frame(window, bg=self.BG, padx=8, pady=7)
+        outer.pack(fill="both", expand=True)
 
         tk.Label(
-            window,
-            text="Each pair occupies opposite positions in the 36-character set.\n"
-            "Their 1-based positions always add up to 37.",
+            outer,
+            text="[ MIRROR TABLE ]",
+            bg=self.BG,
+            fg=self.CYAN,
+            font=("Courier New", 10, "bold"),
+        ).pack(anchor="w")
+
+        tk.Label(
+            outer,
+            text="OPPOSITE POSITIONS // 1-BASED PAIRS TOTAL 37",
             bg=self.BG,
             fg=self.MUTED,
             justify="left",
-            font=("Consolas", 9),
-        ).pack(anchor="w", padx=14, pady=(0, 10))
+            font=("Courier New", 8),
+        ).pack(anchor="w", pady=(2, 5))
+
+        self._rule(outer).pack(fill="x", pady=(0, 6))
 
         text = tk.Text(
-            window,
-            bg=self.PANEL,
+            outer,
+            bg=self.PANEL_2,
             fg=self.NEON,
             insertbackground=self.NEON,
-            relief="flat",
-            padx=14,
-            pady=12,
-            font=("Consolas", 11, "bold"),
+            selectbackground="#607987",
+            selectforeground="#ffffff",
+            relief="sunken",
+            bd=2,
+            padx=8,
+            pady=6,
+            font=("Courier New", 9, "bold"),
         )
-        text.pack(fill="both", expand=True, padx=14, pady=(0, 14))
+        text.pack(fill="both", expand=True)
         text.insert("1.0", "\n".join(mapping_lines()))
         text.config(state="disabled")
 

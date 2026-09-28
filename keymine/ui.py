@@ -608,7 +608,6 @@ class KeyMineApp:
         )
         window.resizable(False, False)
         window.configure(bg=self.BG)
-        window.transient(self.root)
         self._setup_custom_titlebar(window, "KEYMINE // MIRROR TABLE")
 
         outer = tk.Frame(window, bg=self.BG, padx=8, pady=7)

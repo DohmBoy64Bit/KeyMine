@@ -117,6 +117,34 @@ class KeyMineUiTests(unittest.TestCase):
         self.assertEqual(self.app.prefix_var.get(), "DOHM")
         self.assertTrue(self.app.preview_label.cget("text").startswith("SUFFIX PATH: M->X"))
 
+    def test_mapping_window_is_not_styled_as_child_window(self) -> None:
+        import sys
+
+        if sys.platform != "win32":
+            self.skipTest("Win32 window-style check")
+
+        import ctypes
+
+        user32 = ctypes.windll.user32
+        self.app.show_mapping()
+        self.root.update()
+
+        windows = [
+            widget
+            for widget in self.root.winfo_children()
+            if isinstance(widget, tk.Toplevel)
+        ]
+        self.assertEqual(len(windows), 1)
+
+        hwnd = user32.GetParent(windows[0].winfo_id()) or windows[0].winfo_id()
+        style = user32.GetWindowLongW(hwnd, -16) & 0xFFFFFFFF
+        self.assertEqual(
+            style & 0x40000000,
+            0,
+            "mapping dialog HWND must be WS_POPUP, not WS_CHILD",
+        )
+        windows[0].destroy()
+
     def _walk_widgets(self, parent: tk.Misc):
         for child in parent.winfo_children():
             yield child

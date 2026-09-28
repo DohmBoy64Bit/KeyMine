@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import sys
+from pathlib import Path
 import tkinter as tk
 from tkinter import messagebox
 
+from . import audio
 from .core import (
     CHARSET,
     PREFIX_LENGTH,
@@ -13,6 +15,9 @@ from .core import (
     mapping_lines,
     mirror_character,
 )
+
+
+NFO_PATH = Path(__file__).resolve().parents[1] / "KEYMINE.NFO"
 
 
 class KeyMineApp:
@@ -115,13 +120,21 @@ class KeyMineApp:
         self.validate_var = tk.StringVar(value=generate_key("DOHM"))
         self.status_var = tk.StringVar(value="READY // CUSTOM PREFIX LOADED")
         self.mapping_window: tk.Toplevel | None = None
+        self.nfo_window: tk.Toplevel | None = None
+        self.music_on = False
 
         self._build_ui()
         self._bind_events()
         self._refresh_custom_preview()
+        self.root.protocol("WM_DELETE_WINDOW", self.close)
+        self._start_music()
 
     def _build_ui(self) -> None:
-        self._setup_custom_titlebar(self.root, "KEYMINE // SERIAL UTILITY")
+        self._setup_custom_titlebar(
+            self.root,
+            "KEYMINE // SERIAL UTILITY",
+            close_command=self.close,
+        )
         self._ensure_taskbar(self.root)
         self._rule(self.root).pack(fill="x")
 
@@ -407,7 +420,15 @@ class KeyMineApp:
             bg=self.BG,
             fg=self.CYAN,
             font=("Courier New", 8, "bold"),
-        ).pack(side="right")
+        ).pack(side="right", padx=(5, 0))
+
+        self.music_button = self._button(footer, "MUSIC: OFF", self.toggle_music)
+        self.music_button.config(pady=0)
+        self.music_button.pack(side="right", padx=(4, 0))
+
+        nfo_button = self._button(footer, "NFO", self.show_nfo)
+        nfo_button.config(pady=0)
+        nfo_button.pack(side="right", padx=(4, 0))
 
     def _rule(self, parent: tk.Widget) -> tk.Frame:
         return tk.Frame(parent, bg="#363636", height=2, bd=0)
@@ -437,7 +458,13 @@ class KeyMineApp:
         self.validate_entry.bind("<Return>", lambda _event: self.validate_key())
         self.root.bind("<Control-c>", lambda _event: self.copy_key())
 
-    def _setup_custom_titlebar(self, window: tk.Misc, title: str) -> None:
+    def _setup_custom_titlebar(
+        self,
+        window: tk.Misc,
+        title: str,
+        *,
+        close_command=None,
+    ) -> None:
         window.overrideredirect(True)
 
         bar = tk.Frame(window, bg=self.PANEL)
@@ -477,7 +504,7 @@ class KeyMineApp:
         caption.bind("<B1-Motion>", drag_to)
         caption.bind("<ButtonRelease-1>", end_drag)
 
-        self._button(bar, "X", window.destroy).pack(
+        self._button(bar, "X", close_command or window.destroy).pack(
             side="right", fill="y", padx=2, pady=2
         )
 
@@ -598,6 +625,89 @@ class KeyMineApp:
         self.root.clipboard_append(key)
         self.root.update_idletasks()
         self.status_var.set(f"COPIED TO CLIPBOARD // {key}")
+
+    def _start_music(self) -> None:
+        self.music_on = audio.play_loop()
+        self.music_button.config(text="MUSIC: ON" if self.music_on else "MUSIC: OFF")
+
+    def toggle_music(self) -> None:
+        if self.music_on:
+            audio.stop()
+            self.music_on = False
+            self.music_button.config(text="MUSIC: OFF")
+            self.status_var.set("MUSIC // OFF")
+            return
+
+        self.music_on = audio.play_loop()
+        self.music_button.config(text="MUSIC: ON" if self.music_on else "MUSIC: OFF")
+        self.status_var.set("MUSIC // ON" if self.music_on else "MUSIC // UNAVAILABLE")
+
+    def close(self) -> None:
+        audio.stop()
+        self.music_on = False
+        self.root.destroy()
+
+    def show_nfo(self) -> None:
+        if self.nfo_window is not None and self.nfo_window.winfo_exists():
+            self.nfo_window.lift()
+            self.nfo_window.focus_set()
+            return
+
+        try:
+            nfo = NFO_PATH.read_text(encoding="utf-8")
+        except OSError as exc:
+            self.status_var.set("NFO // UNAVAILABLE")
+            messagebox.showerror("NFO unavailable", str(exc), parent=self.root)
+            return
+
+        window = tk.Toplevel(self.root)
+        self.nfo_window = window
+        window.title("KEYMINE // RELEASE NFO")
+        window.geometry("650x520+1000+220")
+        window.resizable(False, False)
+        window.configure(bg=self.BG)
+        self._setup_custom_titlebar(window, "KEYMINE // RELEASE NFO")
+
+        outer = tk.Frame(window, bg=self.BG, padx=8, pady=7)
+        outer.pack(fill="both", expand=True)
+
+        tk.Label(
+            outer,
+            text="[ RELEASE NFO ]",
+            bg=self.BG,
+            fg=self.CYAN,
+            font=("Courier New", 10, "bold"),
+        ).pack(anchor="w")
+
+        self._rule(outer).pack(fill="x", pady=(4, 6))
+
+        text_frame = tk.Frame(outer, bg=self.BG)
+        text_frame.pack(fill="both", expand=True)
+
+        scrollbar = tk.Scrollbar(text_frame, orient="vertical")
+        scrollbar.pack(side="right", fill="y")
+
+        text_widget = tk.Text(
+            text_frame,
+            bg=self.PANEL_2,
+            fg=self.TEXT,
+            insertbackground=self.NEON,
+            selectbackground="#607987",
+            selectforeground="#ffffff",
+            relief="sunken",
+            bd=2,
+            padx=8,
+            pady=6,
+            wrap="none",
+            yscrollcommand=scrollbar.set,
+            font=("Courier New", 9),
+        )
+        text_widget.pack(side="left", fill="both", expand=True)
+        scrollbar.config(command=text_widget.yview)
+        text_widget.insert("1.0", nfo)
+        text_widget.config(state="disabled")
+
+        self.status_var.set("NFO // OPEN")
 
     def show_mapping(self) -> None:
         if self.mapping_window is not None and self.mapping_window.winfo_exists():

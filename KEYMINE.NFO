@@ -42,7 +42,9 @@
   the 36-character set A-Z 0-9 read backwards. KeyMine works out those last
   four for you, from a random prefix or from one you type in.
 
-  KeyMine does not patch, modify or touch Mine-imator. It only outputs text.
+  Key generation and validation do not modify Mine-imator. A separate, explicit
+  command-line option can remove Data\key.midata from a selected installation
+  directory.
 
 .-----------------------------------------------------------------------------.
 |                               F E A T U R E S                               |
@@ -54,9 +56,11 @@
         [x] Suffix path display (shows how the last 4 characters are derived)
         [x] Key validator with VALID / NOT VALID result
         [x] Character mapping viewer
+        [x] Built-in release NFO viewer
         [x] Command-line mode for scripting and batch generation
+        [x] CLI key.midata deletion for a selected Mine-imator directory
         [x] Scene-style desktop interface
-        [x] Original chiptune: "Minefield Melody"
+        [x] Looping original chiptune: "Minefield Melody" + on/off control
         [x] No third-party packages required
 
 .-----------------------------------------------------------------------------.
@@ -117,6 +121,15 @@
   -------
   Shows the character-pair table used by the generator.
 
+  NFO
+  ---
+  Opens this release NFO inside KeyMine.
+
+  MUSIC
+  -----
+  The Windows GUI loops "Minefield Melody" at startup. MUSIC: ON / OFF toggles
+  playback. Closing KeyMine stops the track.
+
 .-----------------------------------------------------------------------------.
 |                           C O M M A N D   L I N E                           |
 `-----------------------------------------------------------------------------'
@@ -126,6 +139,7 @@
         python keygen.py --validate DOHMX2V6  check a key
         python keygen.py --count 10           print 10 random keys
         python keygen.py --show-mapping       print the mirror table
+        python keygen.py --delete-keyfile DIR   delete DIR\Data\key.midata
 
 .-----------------------------------------------------------------------------.
 |                                C R E D I T S                                |

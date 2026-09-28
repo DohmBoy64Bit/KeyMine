@@ -14,6 +14,9 @@ No third-party packages required.
 - Validate existing keys
 - Copy generated keys to the clipboard
 - View the supported character mapping
+- Built-in `KEYMINE.NFO` viewer
+- Loop the included `MinefieldMelody.wav` chiptune with an on/off control
+- Delete Mine-imator's `Data\key.midata` from a chosen installation directory via the CLI
 
 ## Requirements
 
@@ -106,6 +109,16 @@ The app will tell you whether the key matches the supported format.
 
 Use the **Copy** button to place the current generated key on your clipboard.
 
+### NFO Viewer
+
+Use the **NFO** button to open the bundled `KEYMINE.NFO` inside the application. The viewer is read-only and uses the same compact scene-style presentation as the rest of KeyMine.
+
+### Music
+
+On Windows, KeyMine starts `tune/MinefieldMelody.wav` as a looping background track when the GUI opens. Use **MUSIC: ON** / **MUSIC: OFF** to stop or restart it. Closing KeyMine stops playback.
+
+The generator and validator continue to work normally if WAV playback is unavailable.
+
 ## Command-Line Usage
 
 The graphical interface is the default, but the generator also supports command-line commands.
@@ -139,6 +152,22 @@ python keygen.py --count 10
 ```bash
 python keygen.py --show-mapping
 ```
+
+### Delete Mine-imator's Key File
+
+Pass the Mine-imator installation directory to `--delete-keyfile`:
+
+```powershell
+python keygen.py --delete-keyfile "C:\Users\YourName\Downloads\Mine-imator 2.0.2"
+```
+
+KeyMine targets only:
+
+```text
+<INSTALL_DIR>\Data\key.midata
+```
+
+If the file exists, the CLI prints its path followed by `DELETED`. If it does not exist, it prints `NOT FOUND` and exits with status code `1`. The command does not search for or delete other files.
 
 ## Algorithm Documentation
 
@@ -203,6 +232,10 @@ keygen.py               Application entry point
 keymine/core.py         Key generation and validation logic
 keymine/cli.py          Command-line interface
 keymine/ui.py           Tkinter desktop interface
+keymine/audio.py        Windows WAV loop playback
+keymine/keyfile.py      Mine-imator keyfile path/deletion logic
+KEYMINE.NFO             Built-in release NFO
+tune/MinefieldMelody.wav  Original looping chiptune
 README.md               This file
 docs/KEYGEN_GUIDE.md    Algorithm documentation
 tests/                  Regression tests

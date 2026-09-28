@@ -4,6 +4,7 @@ import argparse
 import sys
 
 from .core import generate_key, generate_random_key, key_valid, mapping_lines
+from .keyfile import delete_keyfile, keyfile_path
 
 
 def print_mapping() -> None:
@@ -43,6 +44,11 @@ def build_parser() -> argparse.ArgumentParser:
         metavar="N",
         help="generate N random keys in the terminal instead of launching the GUI",
     )
+    mode.add_argument(
+        "--delete-keyfile",
+        metavar="INSTALL_DIR",
+        help="delete Data\\key.midata from a Mine-imator installation directory",
+    )
 
     return parser
 
@@ -72,6 +78,16 @@ def run_cli() -> int | None:
             for _ in range(args.count):
                 print(generate_random_key())
             return 0
+
+        if args.delete_keyfile is not None:
+            path = keyfile_path(args.delete_keyfile)
+            print(f"KEYFILE: {path}")
+            if delete_keyfile(args.delete_keyfile):
+                print("DELETED")
+                return 0
+
+            print("NOT FOUND")
+            return 1
 
         return None
 

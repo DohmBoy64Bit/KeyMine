@@ -1,5 +1,6 @@
 import tkinter as tk
 import unittest
+from unittest.mock import patch
 
 from keymine.ui import KeyMineApp
 
@@ -11,6 +12,10 @@ class KeyMineUiTests(unittest.TestCase):
         except tk.TclError as exc:
             self.skipTest(f"Tk display unavailable: {exc}")
 
+        self.play_patch = patch("keymine.ui.audio.play_loop", return_value=True)
+        self.stop_patch = patch("keymine.ui.audio.stop")
+        self.mock_play = self.play_patch.start()
+        self.mock_stop = self.stop_patch.start()
         self.app = KeyMineApp(self.root)
         self.root.update_idletasks()
 
@@ -18,6 +23,8 @@ class KeyMineUiTests(unittest.TestCase):
         root = getattr(self, "root", None)
         if root is not None:
             root.destroy()
+        self.stop_patch.stop()
+        self.play_patch.stop()
 
     def test_scene_panel_palette_matches_research_direction(self) -> None:
         self.assertEqual(KeyMineApp.BG, "#030303")
@@ -58,7 +65,16 @@ class KeyMineUiTests(unittest.TestCase):
 
         self.assertSetEqual(
             button_texts,
-            {"GENERATE CUSTOM", "RANDOM", "MAPPING", "COPY", "CHECK KEY", "X"},
+            {
+                "GENERATE CUSTOM",
+                "RANDOM",
+                "MAPPING",
+                "COPY",
+                "CHECK KEY",
+                "NFO",
+                "MUSIC: ON",
+                "X",
+            },
         )
         self.assertEqual(self.app.prefix_var.get(), "DOHM")
         self.assertEqual(self.app.key_var.get(), "DOHMX2V6")
@@ -171,6 +187,47 @@ class KeyMineUiTests(unittest.TestCase):
         ]
         self.assertEqual(len(windows), 1)
         windows[0].destroy()
+
+    def test_music_starts_on_launch_and_toggle_stops_and_restarts_it(self) -> None:
+        self.mock_play.assert_called_once()
+        self.app.toggle_music()
+        self.mock_stop.assert_called_once()
+        self.assertEqual(self.app.music_button.cget("text"), "MUSIC: OFF")
+
+        self.app.toggle_music()
+        self.assertEqual(self.mock_play.call_count, 2)
+        self.assertEqual(self.app.music_button.cget("text"), "MUSIC: ON")
+
+    def test_nfo_viewer_displays_packaged_nfo_and_opens_only_once(self) -> None:
+        existing = set(self.root.winfo_children())
+        self.app.show_nfo()
+        self.app.show_nfo()
+        self.root.update()
+
+        created = [
+            widget
+            for widget in self.root.winfo_children()
+            if widget not in existing and isinstance(widget, tk.Toplevel)
+        ]
+        self.assertEqual(len(created), 1)
+
+        text_widgets = [
+            widget
+            for widget in self._walk_widgets(created[0])
+            if isinstance(widget, tk.Text)
+        ]
+        self.assertEqual(len(text_widgets), 1)
+        content = text_widgets[0].get("1.0", "end-1c")
+        self.assertIn("D O H M   P R E S E N T S", content)
+        self.assertIn("Minefield Melody", content)
+        created[0].destroy()
+
+    def test_close_stops_music_before_destroying_root(self) -> None:
+        with patch.object(self.root, "destroy") as destroy:
+            self.app.close()
+
+        self.mock_stop.assert_called_once()
+        destroy.assert_called_once()
 
     def _walk_widgets(self, parent: tk.Misc):
         for child in parent.winfo_children():

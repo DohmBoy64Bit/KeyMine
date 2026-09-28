@@ -1,5 +1,6 @@
 import subprocess
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -48,6 +49,32 @@ class CliTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0)
         self.assertTrue(result.stdout.startswith("Character mapping:\n\n"))
         self.assertIn("A  <->  9", result.stdout)
+
+    def test_delete_keyfile_mode_deletes_expected_file(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            install_dir = Path(temp_dir)
+            data_dir = install_dir / "Data"
+            data_dir.mkdir()
+            keyfile = data_dir / "key.midata"
+            keyfile.write_text("key", encoding="utf-8")
+
+            result = self.run_keygen("--delete-keyfile", str(install_dir))
+
+            self.assertEqual(result.returncode, 0)
+            self.assertIn(f"KEYFILE: {keyfile}", result.stdout)
+            self.assertTrue(result.stdout.rstrip().endswith("DELETED"))
+            self.assertFalse(keyfile.exists())
+
+    def test_delete_keyfile_mode_reports_missing_file(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            install_dir = Path(temp_dir)
+            expected = install_dir / "Data" / "key.midata"
+
+            result = self.run_keygen("--delete-keyfile", str(install_dir))
+
+            self.assertEqual(result.returncode, 1)
+            self.assertIn(f"KEYFILE: {expected}", result.stdout)
+            self.assertTrue(result.stdout.rstrip().endswith("NOT FOUND"))
 
 
 if __name__ == "__main__":

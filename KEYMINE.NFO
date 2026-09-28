@@ -1,0 +1,177 @@
+.-----------------------------------------------------------------------------.
+|                                                                             |
+|  __  __     ______     __  __     __    __     __     __   __     ______    |
+| /\ \/ /    /\  ___\   /\ \_\ \   /\ "-./  \   /\ \   /\ "-.\ \   /\  ___\   |
+| \ \  _"-.  \ \  __\   \ \____ \  \ \ \-./\ \  \ \ \  \ \ \-.  \  \ \  __\   |
+|  \ \_\ \_\  \ \_____\  \/\_____\  \ \_\ \ \_\  \ \_\  \ \_\\"\_\  \ \_____\ |
+|   \/_/\/_/   \/_____/   \/_____/   \/_/  \/_/   \/_/   \/_/ \/_/   \/_____/ |
+|                                                                             |
+|                -=[ MINE-IMATOR KEY GENERATOR + VALIDATOR ]=-                |
+|                                                                             |
+|                          D O H M   P R E S E N T S                          |
+|                                                                             |
+|                           K E Y M I N E   V 1 . 0                           |
+|                                                                             |
+`-----------------------------------------------------------------------------'
+
+                            R E L E A S E   I N F O
+
+        Program ......... KeyMine v1.0
+        Target .......... Mine-imator (8-character key format)
+        Type ............ Key generator / key validator
+        Group ........... DOHM
+        Release Date .... 09.2026
+        Platform ........ Python 3 + Tkinter (Windows / Linux / macOS)
+        Interface ....... Desktop GUI and command line
+        Protection ...... Client-side pattern check (mirror pairs, no secret)
+        Music ........... "Minefield Melody" (original chiptune)
+
+.-----------------------------------------------------------------------------.
+|                            D E S C R I P T I O N                            |
+`-----------------------------------------------------------------------------'
+
+  KeyMine is a key generator and validator for Mine-imator, the free 3D movie
+  maker based on Minecraft.
+
+  Mine-imator checks keys that are 8 characters long and made of A-Z and 0-9.
+  KeyMine builds keys that pass that check, and tests any key you give it
+  against the same rules.
+
+  Only the first four characters of a key are free. Each of the last four is
+  the mirror partner of the character in the opposite position, taken from
+  the 36-character set A-Z 0-9 read backwards. KeyMine works out those last
+  four for you, from a random prefix or from one you type in.
+
+  KeyMine does not patch, modify or touch Mine-imator. It only outputs text.
+
+.-----------------------------------------------------------------------------.
+|                               F E A T U R E S                               |
+`-----------------------------------------------------------------------------'
+
+        [x] Random valid key generation
+        [x] Custom 4-character prefix (A-Z, 0-9) with live preview
+        [x] Generated-key display with copy to clipboard
+        [x] Suffix path display (shows how the last 4 characters are derived)
+        [x] Key validator with VALID / NOT VALID result
+        [x] Character mapping viewer
+        [x] Command-line mode for scripting and batch generation
+        [x] Scene-style desktop interface
+        [x] Original chiptune: "Minefield Melody"
+        [x] No third-party packages required
+
+.-----------------------------------------------------------------------------.
+|                             K E Y   F O R M A T                             |
+`-----------------------------------------------------------------------------'
+
+  Key layout (8 characters, A-Z and 0-9, not case sensitive):
+
+        P1 P2 P3 P4 M4 M3 M2 M1          Pn = free prefix character
+                                         Mn = mirror partner of Pn
+
+  Mirror table - characters stacked on top of each other are partners:
+
+        ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
+        9876543210ZYXWVUTSRQPONMLKJIHGFEDCBA
+
+  Key positions pair up 1-8, 2-7, 3-6 and 4-5.
+
+        Example:
+        Prefix ........... DOHM
+        Suffix ........... X2V6      (reverse the prefix, mirror each
+                                      character:  M>X  H>2  O>V  D>6)
+        Generated Key .... DOHMX2V6
+
+  36^4 = 1,679,616 valid keys exist. Mine-imator only checks the pattern;
+  there is no hidden secret, signature or server lookup behind it.
+
+.-----------------------------------------------------------------------------.
+|                                  U S A G E                                  |
+`-----------------------------------------------------------------------------'
+
+  Requires Python 3 with Tkinter (included with most standard Python
+  installs). No pip install, no third-party packages.
+
+  Run  python keygen.py  (or  py keygen.py  on Windows) to open the GUI.
+
+  CUSTOM KEY
+  ----------
+  Type any 4-character prefix using A-Z and 0-9 (lowercase is converted
+  to uppercase) and press GENERATE CUSTOM to build the completed key.
+
+  RANDOM
+  ------
+  Press RANDOM to generate a fresh valid key.
+
+  COPY
+  ----
+  Copies the current key to the clipboard.
+
+  VALIDATOR
+  ---------
+  Enter an 8-character key and press CHECK KEY.
+
+        VALID      = key passes the Mine-imator key check
+        NOT VALID  = key fails the Mine-imator key check
+
+  MAPPING
+  -------
+  Shows the character-pair table used by the generator.
+
+.-----------------------------------------------------------------------------.
+|                           C O M M A N D   L I N E                           |
+`-----------------------------------------------------------------------------'
+
+        python keygen.py                      open the GUI (no arguments)
+        python keygen.py --prefix DOHM        build a key from a prefix
+        python keygen.py --validate DOHMX2V6  check a key
+        python keygen.py --count 10           print 10 random keys
+        python keygen.py --show-mapping       print the mirror table
+
+.-----------------------------------------------------------------------------.
+|                                C R E D I T S                                |
+`-----------------------------------------------------------------------------'
+
+        CODE ............ DOHM
+        UI / GFX ........ DOHM
+        MUSIC ........... "Minefield Melody"
+        STYLE ........... Early-2000s scene keygen
+
+        Source ........... https://github.com/DohmBoy64Bit/KeyMine
+
+.-----------------------------------------------------------------------------.
+|                                 G R E E T S                                 |
+`-----------------------------------------------------------------------------'
+
+  greets fly out to...
+
+        coders  .  reversers  .  demosceners  .  archivists
+        pixel pushers  .  tracker heads  .  old-school GUI freaks
+        everyone keeping tiny weird desktop software alive
+
+.-----------------------------------------------------------------------------.
+|                                  N O T E S                                  |
+`-----------------------------------------------------------------------------'
+
+  Mine-imator is free software. Its developer accepts donations in exchange
+  for a key, and a key can also be generated for free on the official site:
+
+        www.mineimator.com
+
+  KeyMine was made for fun, to see how the key format works, and nothing
+  more. It is not affiliated with Mine-imator or its developer. If you enjoy
+  the software, please consider supporting its creator.
+
+  Keys made by KeyMine follow Mine-imator's key format only. They are not
+  universal license keys and will not work with any other software.
+
+  Keep it small.
+  Keep it weird.
+  Keep the music on.
+
+.-----------------------------------------------------------------------------.
+|                                                                             |
+|                   K E Y M I N E  //  D O H M  //  09.2026                   |
+|                                                                             |
+|                     " M I N E F I E L D   M E L O D Y "                     |
+|                                                                             |
+`-----------------------------------------------------------------------------'

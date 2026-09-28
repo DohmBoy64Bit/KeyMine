@@ -30,8 +30,24 @@ class KeyMineUiTests(unittest.TestCase):
         self.assertEqual(KeyMineApp.CONTROL, "#b9b9b9")
 
     def test_main_window_is_fixed_and_compact(self) -> None:
-        self.assertEqual(self.root.geometry().split("+")[0], "520x390")
+        self.assertEqual(self.root.geometry().split("+")[0], "520x410")
         self.assertEqual(self.root.resizable(), (False, False))
+
+    def test_content_is_not_clipped(self) -> None:
+        required = sum(
+            child.winfo_reqheight() for child in self.root.winfo_children()
+        )
+        height = int(self.root.geometry().split("x")[1].split("+")[0])
+        self.assertLessEqual(required, height)
+
+    def test_custom_title_bar_replaces_native_chrome(self) -> None:
+        self.assertTrue(self.root.overrideredirect())
+        label_texts = {
+            widget.cget("text")
+            for widget in self._walk_widgets(self.root)
+            if isinstance(widget, tk.Label)
+        }
+        self.assertIn("KEYMINE // SERIAL UTILITY", label_texts)
 
     def test_required_original_controls_remain_available(self) -> None:
         button_texts = {
@@ -42,7 +58,7 @@ class KeyMineUiTests(unittest.TestCase):
 
         self.assertSetEqual(
             button_texts,
-            {"GENERATE CUSTOM", "RANDOM", "MAPPING", "COPY", "CHECK KEY"},
+            {"GENERATE CUSTOM", "RANDOM", "MAPPING", "COPY", "CHECK KEY", "X"},
         )
         self.assertEqual(self.app.prefix_var.get(), "DOHM")
         self.assertEqual(self.app.key_var.get(), "DOHMX2V6")

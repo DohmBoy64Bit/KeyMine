@@ -102,7 +102,11 @@ class KeyMineApp:
     def __init__(self, root: tk.Tk) -> None:
         self.root = root
         self.root.title("KEYMINE // SERIAL UTILITY")
-        self.root.geometry("520x390")
+        screen_w = self.root.winfo_screenwidth()
+        screen_h = self.root.winfo_screenheight()
+        self.root.geometry(
+            f"520x410+{(screen_w - 520) // 2}+{(screen_h - 410) // 2}"
+        )
         self.root.resizable(False, False)
         self.root.configure(bg=self.BG)
 
@@ -116,6 +120,10 @@ class KeyMineApp:
         self._refresh_custom_preview()
 
     def _build_ui(self) -> None:
+        self._setup_custom_titlebar(self.root, "KEYMINE // SERIAL UTILITY")
+        self._ensure_taskbar(self.root)
+        self._rule(self.root).pack(fill="x")
+
         outer = tk.Frame(self.root, bg=self.BG, padx=8, pady=6)
         outer.pack(fill="both", expand=True)
 
@@ -428,6 +436,90 @@ class KeyMineApp:
         self.validate_entry.bind("<Return>", lambda _event: self.validate_key())
         self.root.bind("<Control-c>", lambda _event: self.copy_key())
 
+    def _setup_custom_titlebar(self, window: tk.Misc, title: str) -> None:
+        window.overrideredirect(True)
+
+        bar = tk.Frame(window, bg=self.PANEL)
+        bar.pack(fill="x", side="top")
+
+        caption = tk.Label(
+            bar,
+            text=title,
+            bg=self.PANEL,
+            fg=self.TEXT,
+            anchor="w",
+            padx=8,
+            font=("Courier New", 9, "bold"),
+            cursor="fleur",
+        )
+        caption.pack(side="left", fill="both", expand=True)
+
+        drag: dict[str, int] = {}
+
+        def start_drag(event: tk.Event) -> None:
+            drag["x"] = event.x_root - window.winfo_x()
+            drag["y"] = event.y_root - window.winfo_y()
+
+        def drag_to(event: tk.Event) -> None:
+            if not drag:
+                return
+            screen_w = window.winfo_screenwidth()
+            screen_h = window.winfo_screenheight()
+            x = max(0, min(event.x_root - drag["x"], screen_w - 60))
+            y = max(0, min(event.y_root - drag["y"], screen_h - 30))
+            window.geometry(f"+{x}+{y}")
+
+        def end_drag(_event: tk.Event) -> None:
+            drag.clear()
+
+        caption.bind("<Button-1>", start_drag)
+        caption.bind("<B1-Motion>", drag_to)
+        caption.bind("<ButtonRelease-1>", end_drag)
+
+        self._button(bar, "X", window.destroy).pack(
+            side="right", fill="y", padx=2, pady=2
+        )
+
+    def _ensure_taskbar(self, window: tk.Misc) -> None:
+        """Keep an override-redirect window in the taskbar and Alt-Tab on Windows."""
+        if sys.platform != "win32":
+            return
+
+        try:
+            import ctypes
+
+            user32 = ctypes.windll.user32
+            window_class = ctypes.create_unicode_buffer(64)
+            hwnd = 0
+            for candidate in (window.winfo_id(), user32.GetParent(window.winfo_id())):
+                if not candidate or not user32.IsWindow(candidate):
+                    continue
+                user32.GetClassNameW(candidate, window_class, 64)
+                if window_class.value == "TkTopLevel":
+                    hwnd = candidate
+                    break
+
+            if not hwnd:
+                return
+
+            gwl_exstyle = -20
+            ws_ex_appwindow = 0x00040000
+            ws_ex_toolwindow = 0x00000080
+            style = user32.GetWindowLongW(hwnd, gwl_exstyle) & 0xFFFFFFFF
+            style = (style | ws_ex_appwindow) & ~ws_ex_toolwindow
+            user32.SetWindowLongW(hwnd, gwl_exstyle, style)
+            user32.SetWindowPos(
+                hwnd,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0x0001 | 0x0002 | 0x0004 | 0x0010 | 0x0020,
+            )
+        except Exception:
+            pass
+
     def _on_prefix_changed(self) -> None:
         cleaned = "".join(
             character
@@ -510,10 +602,15 @@ class KeyMineApp:
     def show_mapping(self) -> None:
         window = tk.Toplevel(self.root)
         window.title("KEYMINE // MIRROR TABLE")
-        window.geometry("340x390")
+        window.geometry(
+            f"340x390"
+            f"+{self.root.winfo_x() + (520 - 340) // 2}"
+            f"+{self.root.winfo_y() + (410 - 390) // 2}"
+        )
         window.resizable(False, False)
         window.configure(bg=self.BG)
         window.transient(self.root)
+        self._setup_custom_titlebar(window, "KEYMINE // MIRROR TABLE")
 
         outer = tk.Frame(window, bg=self.BG, padx=8, pady=7)
         outer.pack(fill="both", expand=True)

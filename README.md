@@ -4,6 +4,8 @@ A Python key generator and validator for the 8-character key format used by [Min
 
 No third-party packages required.
 
+![KeyMine desktop interface](img/preview.png)
+
 ## Features
 
 - Compact early-2000s scene-keygen-inspired desktop interface

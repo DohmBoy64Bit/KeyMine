@@ -647,6 +647,16 @@ class KeyMineApp:
         self.music_on = False
         self.root.destroy()
 
+    def _anchored_geometry(self, width: int, height: int) -> str:
+        """Place a panel right of the main window, keeping it fully on-screen."""
+        screen_w = self.root.winfo_screenwidth()
+        screen_h = self.root.winfo_screenheight()
+        x = self.root.winfo_x() + 527
+        y = self.root.winfo_y() - 20
+        x = max(0, min(x, screen_w - width))
+        y = max(0, min(y, screen_h - height))
+        return f"{width}x{height}+{x}+{y}"
+
     def show_nfo(self) -> None:
         if self.nfo_window is not None and self.nfo_window.winfo_exists():
             self.nfo_window.lift()
@@ -663,7 +673,7 @@ class KeyMineApp:
         window = tk.Toplevel(self.root)
         self.nfo_window = window
         window.title("KEYMINE // RELEASE NFO")
-        window.geometry("650x520+1000+220")
+        window.geometry(self._anchored_geometry(650, 520))
         window.resizable(False, False)
         window.configure(bg=self.BG)
         self._setup_custom_titlebar(window, "KEYMINE // RELEASE NFO")
@@ -718,7 +728,7 @@ class KeyMineApp:
         window = tk.Toplevel(self.root)
         self.mapping_window = window
         window.title("KEYMINE // MIRROR TABLE")
-        window.geometry("340x390+1227+315")
+        window.geometry(self._anchored_geometry(340, 390))
         window.resizable(False, False)
         window.configure(bg=self.BG)
         self._setup_custom_titlebar(window, "KEYMINE // MIRROR TABLE")

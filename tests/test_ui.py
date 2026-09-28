@@ -229,6 +229,38 @@ class KeyMineUiTests(unittest.TestCase):
         self.mock_stop.assert_called_once()
         destroy.assert_called_once()
 
+    def test_mapping_window_follows_main_window_position(self) -> None:
+        self.root.geometry("+200+100")
+        self.root.update()
+
+        self.app.show_mapping()
+        self.root.update()
+
+        windows = [
+            widget
+            for widget in self.root.winfo_children()
+            if isinstance(widget, tk.Toplevel)
+        ]
+        self.assertEqual(len(windows), 1)
+        self.assertEqual(windows[0].geometry(), "340x390+727+80")
+        windows[0].destroy()
+
+    def test_nfo_window_shares_mapping_anchor(self) -> None:
+        self.root.geometry("+200+100")
+        self.root.update()
+
+        self.app.show_nfo()
+        self.root.update()
+
+        windows = [
+            widget
+            for widget in self.root.winfo_children()
+            if isinstance(widget, tk.Toplevel)
+        ]
+        self.assertEqual(len(windows), 1)
+        self.assertEqual(windows[0].geometry(), "650x520+727+80")
+        windows[0].destroy()
+
     def _walk_widgets(self, parent: tk.Misc):
         for child in parent.winfo_children():
             yield child

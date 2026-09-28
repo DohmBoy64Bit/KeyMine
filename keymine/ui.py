@@ -529,7 +529,6 @@ class KeyMineApp:
 
         if cleaned != self.prefix_var.get():
             self.prefix_var.set(cleaned)
-            return
 
         self._refresh_custom_preview()
 

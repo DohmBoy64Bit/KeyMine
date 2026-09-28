@@ -105,6 +105,18 @@ class KeyMineUiTests(unittest.TestCase):
         self.assertIn("A  <->  9", text_widgets[0].get("1.0", "end-1c"))
         created[0].destroy()
 
+    def test_lowercase_typing_refreshes_suffix_preview(self) -> None:
+        self.app.prefix_var.set("")
+        self.assertIn("4 CHAR(S) REMAINING", self.app.preview_label.cget("text"))
+
+        self.app.prefix_entry.insert("end", "d")
+        self.assertEqual(self.app.prefix_var.get(), "D")
+        self.assertIn("3 CHAR(S) REMAINING", self.app.preview_label.cget("text"))
+
+        self.app.prefix_entry.insert("end", "ohm")
+        self.assertEqual(self.app.prefix_var.get(), "DOHM")
+        self.assertTrue(self.app.preview_label.cget("text").startswith("SUFFIX PATH: M->X"))
+
     def _walk_widgets(self, parent: tk.Misc):
         for child in parent.winfo_children():
             yield child

@@ -1,1 +1,1 @@
-"""RetroMine key generator package."""
+"""KeyMine key generator package."""

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""RetroMine application entry point."""
+"""KeyMine application entry point."""
 
 from keymine.cli import run_cli
 

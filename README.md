@@ -1,4 +1,4 @@
-# RetroMine - Key Generator for Mine-imator
+# KeyMine - Key Generator for Mine-imator
 
 A Python key generator and validator for the 8-character key format used by [Mine-imator](https://github.com/stuffbydavid/mine-imator). Generate random keys, build a key around your own 4-character prefix, and check whether an existing key is valid — from a desktop interface or the command line.
 
